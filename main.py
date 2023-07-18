@@ -1,3 +1,4 @@
+import os
 import argparse
 import random
 from args import get_parser
@@ -32,10 +33,13 @@ if __name__ == '__main__':
 
     if args['seed'] is None:
         args['seed'] = random.randint(0, 10000)
-
+    
+    if not os.path.exists(args['tb_dir']):
+        os.mkdir(args['tb_dir'])
     args['checkpoint_dir'] += '/{}_{}'.format(model_name, args['name'])
     args['log_dir'] += '/{}_{}'.format(model_name, args['name'])
     args['tb_dir'] += '/{}_{}'.format(model_name, args['name'])
+    
     args = argparse.Namespace(**args)
 
     if args.debug:

@@ -38,7 +38,7 @@ def get_parser():
     parser.add_argument('--pred_gamma', type=float, default=1e+1)
     parser.add_argument('--plan_gamma', type=float, default=1e-1)
     parser.add_argument('--state_gamma', type=float, default=1e-1)
-    parser.add_argument('--term_gamma', type=float, default=1e-1)
+    parser.add_argument('--term_gamma', type=float, default=1e-1)    
 
     # -- Seq2seq
     parser.add_argument('--beam', default=False, action='store_true')

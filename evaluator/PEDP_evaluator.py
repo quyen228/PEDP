@@ -122,6 +122,7 @@ class PEDPEvaluator:
     def __init__(self, args, cfg, robust=True):
         self.result_buffer = []
         tb_path = args.tb_dir
+        
         if not os.path.exists(tb_path):
             os.mkdir(tb_path)
         self.args = args

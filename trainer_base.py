@@ -86,7 +86,7 @@ class Trainer:
             val_success, val_f1 = self.evaluator.summary('VALID', epoch)
 
         with torch.no_grad():
-            iterator_agenda = tqdm(enumerate(self.test_loader)) if self.args.retest else enumerate(self.test_loader)
+            iterator_agenda = tqdm(enumerate(self.test_loader))
             for batch_idx, data in iterator_agenda:
                 s, a_tgt_pred, s_tgt_pred, s_tgt_pos, a_tgt_seq, a_full_tgt, a_tgt_pos = to_device(data)
 
@@ -114,18 +114,18 @@ class Trainer:
                                     loss_term.item(), plan_term_tsr, gold_term_tsr)
             net_eval = self.net if (epoch + 1) % 1 == 0 or rbs else None
             test_success, test_f1 = self.evaluator.summary('TEST', epoch, net_eval)
-        if not self.args.test:
-            save_path = self.args.checkpoint_dir
-            if not os.path.exists(save_path):
-                os.mkdir(save_path)
+        
+        save_path = self.args.checkpoint_dir
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+        torch.save({'epoch': epoch + 1,
+                    'state_dict': self.net.state_dict(),
+                    'best_f1': test_success}, save_path + '/{}.pth.tar'.format(epoch))
+        if test_f1 > self.best:
+            self.best = test_f1
             torch.save({'epoch': epoch + 1,
                         'state_dict': self.net.state_dict(),
-                        'best_f1': test_success}, save_path + '/{}.pth.tar'.format(epoch))
-            if test_f1 > self.best:
-                self.best = test_f1
-                torch.save({'epoch': epoch + 1,
-                            'state_dict': self.net.state_dict(),
-                            'best_f1': test_success}, save_path + '/best.pth.tar')
+                        'best_f1': test_success}, save_path + '/best.pth.tar')
 
     def imitate(self, epoch):
         seed_everything(seed=self.args.seed)
